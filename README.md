@@ -1,15 +1,13 @@
-# vnx-kubeadm
+# vnx-lab-k8s-kubeadm
 VNX scenario that deploys a K8s cluster using kubeadm
 
-## Escenario de pruebas del cluster de Kubernetes
-
-### Topología del escenario
+## Topología del escenario
 
 ![Escenario VNX de pruebas de Kubernetes ](img/vnx-k8s-lab.png)
 
 
-### Requisitos
-#### Host Linux con VNX instalado 
+## Requisitos
+### Host Linux con VNX instalado 
 Ver receta de instalación de VNX en http://vnx.dit.upm.es. Receta probada sobre Ubuntu 20.04 y 22.04.
 
 El escenario utiliza dos imágenes de VNX:
@@ -23,7 +21,7 @@ vnx_download_rootfs -r vnx_rootfs_kvm_ubuntu64-22.04-v025.qcow2 -y -l
 vnx_download_rootfs -r vnx_rootfs_lxc_ubuntu64-20.04-v025 -y -l
 cd -
 ```
-#### kubectl
+### kubectl
 Para instalar kubectl en el host (ver https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 ```bash
 sudo apt-get update
@@ -34,7 +32,7 @@ sudo apt-get update
 sudo apt-get install -y kubectl
 ```
 
-### Manual de usuario
+## Manual de usuario
 
 - Arranque del escenario:
 ```bash
@@ -49,7 +47,7 @@ sudo vnx -f k8s-lab-kubeadm.xml --create
 scp k8s-master:.kube/config ~/.kube
 ```
 
-### Comprobación del funcionamiento del cluster
+## Comprobación del funcionamiento del cluster
 - Disponibilidad de nodos del cluster:
 ```bash
 kubectl get nodes
@@ -105,7 +103,7 @@ NAME    IPADDRESSPOOLS   IPADDRESSPOOL SELECTORS   INTERFACES
 empty
 ```
 
-### Ejemplos de despliegue de servicios
+## Ejemplos de despliegue de servicios
 Se proporcionan junto con el escenario virtual de pruebas algunos ejemplos sencillo de despliegue de servicios. Los ejemplos se basan en el despliegue de tres servidores web nginx mediante el siguiente *Deployment*:
 ```bash
 apiVersion: apps/v1
@@ -146,7 +144,7 @@ nginx-web-server-pool-6867b54ccc-fx79w   1/1     Running   0          80m
 nginx-web-server-pool-6867b54ccc-k78kp   1/1     Running   0          80m
 ```
 
-#### Acceso a los servidores mediante un servicio del tipo NodePort
+### Acceso a los servidores mediante un servicio del tipo NodePort
 - Definición del servicio (nginx-service-nodeport.yaml):
 ```bash
 apiVersion: v1
@@ -172,7 +170,7 @@ while true; do curl --no-progress-meter 10.10.10.10:30000; sleep 1; done    # Ac
 while true; do curl --no-progress-meter 10.10.10.11:30000; sleep 1; done    # Acceso a través de nodo k8s-worker1
 while true; do curl --no-progress-meter 10.10.10.12:30000; sleep 1; done    # Acceso a través de nodo k8s-worker2
 ```
-#### Acceso a los servidores mediante un servicio del tipo LoadBalancer
+### Acceso a los servidores mediante un servicio del tipo LoadBalancer
 - Definición del servicio (nginx-service-lb.yaml):
 ```bash
 apiVersion: v1
@@ -203,7 +201,7 @@ nginx-service   LoadBalancer   10.107.39.126   10.10.10.20   9090:30000/TCP   3h
 while true; do curl --no-progress-meter 10.10.10.20:9090; sleep 1; done
 ```
 
-#### Acceso a los servidores mediante un proxy inverso (Ingress)
+### Acceso a los servidores mediante un proxy inverso (Ingress)
 - Definición del objeto (nginx-ingress.yaml):
 ```bash
 apiVersion: networking.k8s.io/v1
@@ -262,7 +260,7 @@ sudo bash -c "echo '$NGINXIPADDR example.pagoda.local' >> /etc/hosts"
 while true; do curl --no-progress-meter example.pagoda.local/path; sleep 1; done
 ```
 
-### Referencias
+## Referencias
 - How to Install Kubernetes Cluster on Ubuntu 22.04. https://www.linuxtechi.com/install-kubernetes-on-ubuntu-22-04/
 - Exposing Kubernetes services with MetalLB and Nginx ingress controller. https://sangvhh.net/exposing-kubernetes-services-with-metallb-and-nginx-ingress-controller/
 
