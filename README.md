@@ -36,7 +36,7 @@ sudo apt-get install -y kubectl
 
 - Arranque del escenario:
 ```bash
-sudo vnx -f k8s-lab-kubeadm.xml --create
+sudo vnx -f k8s_lab.xml --create
 ```
 - Instalación del cluster:
 ```bash
