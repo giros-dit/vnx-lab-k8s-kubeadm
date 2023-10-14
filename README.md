@@ -44,6 +44,7 @@ sudo vnx -f k8s_lab.xml --create
 ```
 - Copiar las credenciales del cluster al host para poder acceder al cluster utilizando *kubectl*:
 ```bash
+mkdir ~/.kube
 scp k8s-master:.kube/config ~/.kube
 ```
 
