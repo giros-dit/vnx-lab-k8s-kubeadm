@@ -80,7 +80,7 @@ kube-scheduler-k8s-master                 1/1     Running   0          37m
 ```
 - Estado de los pod de Ingress:
 ```bash
- kubectl get pods -n ingress-nginx
+kubectl get pods -n ingress-nginx
 NAME                                        READY   STATUS      RESTARTS   AGE
 ingress-nginx-admission-create-2j4f8        0/1     Completed   0          24m
 ingress-nginx-admission-patch-shlzz         0/1     Completed   2          24m
