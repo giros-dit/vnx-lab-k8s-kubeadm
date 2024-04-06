@@ -104,20 +104,20 @@ pak
 #done
 
 
-msg "Step 6) Initialize Kubernetes cluster with Kubeadm command (k8s-master)"
-msg "  Downloading images..."
-ssh root@k8s-master "kubeadm config images pull"
-msg "  Executing kubeadm init on master node..."
-ssh root@k8s-master "
-  kubeadm init --control-plane-endpoint=10.10.10.10
-
-  mkdir -p \$HOME/.kube
-  cp -i /etc/kubernetes/admin.conf \$HOME/.kube/config
-  chown \$(id -u):\$(id -g) \$HOME/.kube/config
-  kubectl cluster-info
-  kubectl get nodes
-"
-pak
+#msg "Step 6) Initialize Kubernetes cluster with Kubeadm command (k8s-master)"
+#msg "  Downloading images..."
+#ssh root@k8s-master "kubeadm config images pull"
+#msg "  Executing kubeadm init on master node..."
+#ssh root@k8s-master "
+#  kubeadm init --control-plane-endpoint=10.10.10.10
+#
+#  mkdir -p \$HOME/.kube
+#  cp -i /etc/kubernetes/admin.conf \$HOME/.kube/config
+#  chown \$(id -u):\$(id -g) \$HOME/.kube/config
+#  kubectl cluster-info
+#  kubectl get nodes
+#"
+#pak
 
 JOINCMD=$( ssh root@k8s-master "kubeadm token create --print-join-command" )
 echo $JOINCMD
@@ -134,48 +134,48 @@ pak
 ssh root@k8s-master "kubectl get nodes"
 pak
 
-msg "Step 6) Install Calico Pod Network Add-on"
-#  curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
-#  kubectl apply -f calico.yaml
-ssh root@k8s-master "
-  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
-  kubectl set env daemonset/calico-node -n kube-system  IP_AUTODETECTION_METHOD=interface=eth1
-"
-
-sleep 30
-ssh root@k8s-master "kubectl get pods -n kube-system"
-pak
-
-msg "Step 7) Install Multus"
-ssh root@k8s-master "
-    mkdir -p k8s
-    cd k8s
-#    git clone https://github.com/k8snetworkplumbingwg/multus-cni.git
-    cd multus-cni
-    cat ./deployments/multus-daemonset-thick.yml | kubectl apply -f -
-    sleep 10
-    kubectl get pods --all-namespaces | grep -i multus
-"
-pak
-
-msg "Step 8) Install Ingress NGINX"
-ssh root@k8s-master "
-    cd k8s/
-    wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/baremetal/deploy.yaml
-    sed -i 's/NodePort/LoadBalancer/' deploy.yaml
-    kubectl apply -f deploy.yaml
-    kubectl get pods -n ingress-nginx
-"
-pak
-
-msg "Step 9) Install MetalLB"
-ssh root@k8s-master "
-    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
-    sleep 20
-    kubectl apply -f k8s/config-pool.yaml
-    kubectl apply -f k8s/config-l2adv.yaml
-    kubectl get all -n metallb-system
-"
+#msg "Step 6) Install Calico Pod Network Add-on"
+##  curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
+##  kubectl apply -f calico.yaml
+#ssh root@k8s-master "
+#  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+#  kubectl set env daemonset/calico-node -n kube-system  IP_AUTODETECTION_METHOD=interface=eth1
+#"
+#
+#sleep 30
+#ssh root@k8s-master "kubectl get pods -n kube-system"
+#pak
+#
+#msg "Step 7) Install Multus"
+#ssh root@k8s-master "
+#    mkdir -p k8s
+#    cd k8s
+##    git clone https://github.com/k8snetworkplumbingwg/multus-cni.git
+#    cd multus-cni
+#    cat ./deployments/multus-daemonset-thick.yml | kubectl apply -f -
+#    sleep 10
+#    kubectl get pods --all-namespaces | grep -i multus
+#"
+#pak
+#
+#msg "Step 8) Install Ingress NGINX"
+#ssh root@k8s-master "
+#    cd k8s/
+#    wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/baremetal/deploy.yaml
+#    sed -i 's/NodePort/LoadBalancer/' deploy.yaml
+#    kubectl apply -f deploy.yaml
+#    kubectl get pods -n ingress-nginx
+#"
+#pak
+#
+#msg "Step 9) Install MetalLB"
+#ssh root@k8s-master "
+#    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+#    sleep 20
+#    kubectl apply -f k8s/config-pool.yaml
+#    kubectl apply -f k8s/config-l2adv.yaml
+#    kubectl get all -n metallb-system
+#"
 
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))

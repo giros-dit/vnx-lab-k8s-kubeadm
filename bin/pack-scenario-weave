@@ -1,0 +1,21 @@
+#!/bin/bash
+
+SCENARIO=k8s_lab-weave.xml
+VERS='01'
+
+# Move to the upper directory where this script is
+cdir=$( dirname $0 )
+cd $cdir/..
+
+# Chapuza temporal para evitar que se copien los tres rootfs
+# habria que añadir a vnx una opcion --pack-exclude-rootfs
+mv filesystems/rootfs_ubuntu64-k8s-calico-master .
+sudo vnx \
+    --pack $SCENARIO \
+    --pack-version $VERS \
+    --pack-add-files \
+        README.md \
+        bin img shared \
+    $1 $2 $3
+
+mv rootfs_ubuntu64-k8s-calico-master filesystems

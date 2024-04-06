@@ -44,7 +44,7 @@ SPAIN
   <vm name="k8s-master" type="libvirt" subtype="kvm" os="linux" exec_mode="sdisk" arch="x86_64" vcpu="2">
     <mem>3G</mem>
     <!--filesystem type="cow">/usr/share/vnx/filesystems/vnx_rootfs_kvm_ubuntu64-22.04-v025.qcow2</filesystem-->
-    <filesystem type="cow">filesystems/rootfs_ubuntu64-k8s-master</filesystem>
+    <filesystem type="cow">filesystems/rootfs_ubuntu64-k8s-weave-master</filesystem>
     <shareddir root="/shared">shared</shareddir>
     <forwarding type="ip" />
     <if id="1" net="k8s_LAN">

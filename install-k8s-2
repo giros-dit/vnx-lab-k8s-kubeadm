@@ -2,7 +2,15 @@
 
 START_TIME=$SECONDS
 
+function duration () {
+  ELAPSED_TIME=$(($SECONDS - $INISTEPTIME))
+  echo "--"
+  echo "-- Time: $ELAPSED_TIME seconds"
+  echo "--"
+}
+
 function pak { 
+  duration
   if [ ! -z "$PAUSE"  ]; then
     read -p "Press any key to continue..."; 
   fi
@@ -104,7 +112,9 @@ pak
 #done
 
 
+
 msg "Step 6) Initialize Kubernetes cluster with Kubeadm command (k8s-master)"
+INISTEPTIME=$SECONDS
 msg "  Downloading images..."
 ssh root@k8s-master "kubeadm config images pull"
 msg "  Executing kubeadm init on master node..."
@@ -119,22 +129,8 @@ ssh root@k8s-master "
 "
 pak
 
-JOINCMD=$( ssh root@k8s-master "kubeadm token create --print-join-command" )
-echo $JOINCMD
-pak
-
-msg "Adding worker1..."
-ssh root@k8s-worker1 "$JOINCMD"
-pak
-
-msg "Adding worker2..."
-ssh root@k8s-worker2 "$JOINCMD"
-pak
-
-ssh root@k8s-master "kubectl get nodes"
-pak
-
 msg "Step 6) Install Calico Pod Network Add-on"
+INISTEPTIME=$SECONDS
 #  curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
 #  kubectl apply -f calico.yaml
 ssh root@k8s-master "
@@ -147,6 +143,7 @@ ssh root@k8s-master "kubectl get pods -n kube-system"
 pak
 
 msg "Step 7) Install Multus"
+INISTEPTIME=$SECONDS
 ssh root@k8s-master "
     mkdir -p k8s
     cd k8s
@@ -159,6 +156,7 @@ ssh root@k8s-master "
 pak
 
 msg "Step 8) Install Ingress NGINX"
+INISTEPTIME=$SECONDS
 ssh root@k8s-master "
     cd k8s/
     wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/baremetal/deploy.yaml
@@ -169,6 +167,7 @@ ssh root@k8s-master "
 pak
 
 msg "Step 9) Install MetalLB"
+INISTEPTIME=$SECONDS
 ssh root@k8s-master "
     kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
     sleep 20
@@ -177,9 +176,26 @@ ssh root@k8s-master "
     kubectl get all -n metallb-system
 "
 
+INISTEPTIME=$SECONDS
+JOINCMD=$( ssh root@k8s-master "kubeadm token create --print-join-command" )
+echo $JOINCMD
+pak
+
+INISTEPTIME=$SECONDS
+msg "Adding worker1..."
+ssh root@k8s-worker1 "$JOINCMD"
+pak
+
+INISTEPTIME=$SECONDS
+msg "Adding worker2..."
+ssh root@k8s-worker2 "$JOINCMD"
+pak
+
+INISTEPTIME=$SECONDS
+ssh root@k8s-master "kubectl get nodes"
+pak
 
 ELAPSED_TIME=$(($SECONDS - $START_TIME))
 echo "--"
 echo "-- K8s installed in $ELAPSED_TIME seconds"
 echo "--"
-
