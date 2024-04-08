@@ -86,7 +86,7 @@ ingress-nginx-admission-create-2j4f8        0/1     Completed   0          24m
 ingress-nginx-admission-patch-shlzz         0/1     Completed   2          24m
 ingress-nginx-controller-64f79ddbcc-j8v7n   1/1     Running     0          24m
 ``` 
--Estado de los pod y configuración de MetalLB:
+- Estado de los pod y configuración de MetalLB:
 ```bash
 kubectl get pods -n metallb-system -o wide
 NAME                          READY   STATUS    RESTARTS   AGE   IP                NODE          NOMINATED NODE   READINESS GATES
