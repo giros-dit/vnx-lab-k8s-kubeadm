@@ -1,4 +1,4 @@
-# vnx-lab-k8s-kubeadm
+# Kubernetes VNX Virtual Laboratory
 VNX scenario that deploys a K8s cluster using kubeadm
 
 ## Topología del escenario
